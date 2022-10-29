@@ -5,7 +5,7 @@ const octokit = new Octokit({
   auth: process.env.REACT_APP_TOKEN
 });
 
-function isOctokitError(e: unknown): e is RequestError {
+const isOctokitError = (e: unknown): e is RequestError => {
   if (
     e &&
     typeof e === "object" &&
@@ -16,18 +16,20 @@ function isOctokitError(e: unknown): e is RequestError {
     return true;
   }
   return false;
-}
+};
 
-export const getIssues = async () => {
+export const getIssueData = async () => {
   try {
-    const result = await octokit.request("GET /repos/{owner}/{repo}/issues", {
+    const { data } = await octokit.request("GET /repos/{owner}/{repo}/issues", {
       owner: "angular",
       repo: "angular-cli",
       per_page: 20,
       sort: "comments",
       direction: "desc"
     });
-    return result.data;
+    const opendIssues = data.filter((it) => it.state === "open");
+
+    return opendIssues;
   } catch (error) {
     if (isOctokitError(error)) {
       console.log(`Error! Status: ${error.status}. Message: ${error.errors}`);
