@@ -14,7 +14,7 @@ const Issues = () => {
   const [loading, setIsLoading] = useState(true);
 
   const target = useRef<HTMLDivElement>(null);
-  const page = useRef<number>(1);
+  const { page, setPage } = useContext(IssueContext);
 
   // FIXME: 훅으로 바꾸자!
   const getIssues = async (page: number) => {
@@ -40,8 +40,8 @@ const Issues = () => {
   };
 
   useEffect(() => {
-    getIssues(page.current);
-  }, []);
+    getIssues(page);
+  }, [page]);
 
   //FIXME: 훅으로 바꾸기
   useEffect(() => {
@@ -49,9 +49,8 @@ const Issues = () => {
       //로딩되었을 때만 실행
       const observer = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting) {
-          page.current += 1;
+          setPage((prev) => prev + 1);
 
-          getIssues(page.current);
           // 데이터 더 불러오면서 페이지 증가시키기
           //밑에 도달했을 때 pageNumber를 1씩 증가시켜 데이터를 10개씩 더 보여줌.
         }

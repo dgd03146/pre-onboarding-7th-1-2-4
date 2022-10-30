@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 interface ContextProps {
   children: React.ReactNode;
@@ -16,16 +16,21 @@ export interface IssueData {
 interface IssueContext {
   issues: IssueData[];
   setIssues: React.Dispatch<React.SetStateAction<IssueData[]>>;
+  page: number;
+  setPage: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export const IssueContext = React.createContext<IssueContext>(null!);
 
 const ContextProvider = ({ children }: ContextProps) => {
   const [issues, setIssues] = useState<IssueData[]>([]);
+  const [page, setPage] = useState<number>(1);
 
   const value = {
     issues,
-    setIssues
+    setIssues,
+    page,
+    setPage
   };
 
   return (
