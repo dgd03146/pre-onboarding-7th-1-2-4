@@ -14,7 +14,8 @@ export const theme: DefaultTheme = {
     primary: "#6a5acd",
     red: "#c93434",
     gray_dark: "#777",
-    gray: "#c2c2c2",
+    white: "#f6f8fa",
+    gray: "#d0d7de",
     gray_alpha_30: "#c2c2c24d",
     white_alpha_30: "#ffffff80"
   }

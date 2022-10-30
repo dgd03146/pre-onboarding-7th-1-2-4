@@ -23,13 +23,32 @@ export const getIssueData = async () => {
     const { data } = await octokit.request("GET /repos/{owner}/{repo}/issues", {
       owner: "angular",
       repo: "angular-cli",
-      per_page: 20,
+      per_page: 10,
       sort: "comments",
       direction: "desc"
     });
     const opendIssues = data.filter((it) => it.state === "open");
 
     return opendIssues;
+  } catch (error) {
+    if (isOctokitError(error)) {
+      console.log(`Error! Status: ${error.status}. Message: ${error.errors}`);
+    }
+  }
+};
+
+export const getDetailData = async (issue_number: number) => {
+  try {
+    const { data } = await octokit.request(
+      "GET /repos/{owner}/{repo}/issues/{issue_number}",
+      {
+        owner: "angular",
+        repo: "angular-cli",
+        issue_number
+      }
+    );
+
+    return data;
   } catch (error) {
     if (isOctokitError(error)) {
       console.log(`Error! Status: ${error.status}. Message: ${error.errors}`);

@@ -12,7 +12,10 @@ const GlobalStyle = createGlobalStyle`
         text-decoration: none;
         color:#1d1d1d;
     }
-    
+    svg{
+        font-size: 1.1rem;
+      
+    }
 `;
 
 export default GlobalStyle;

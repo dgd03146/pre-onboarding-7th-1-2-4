@@ -15,7 +15,8 @@ const Layout = () => {
 export default Layout;
 
 const Container = styled.div`
-  max-width: 1280px;
+  max-width: 60vw;
   margin: 0 auto;
   min-height: 100vh;
+  padding: 1.5rem 0;
 `;
