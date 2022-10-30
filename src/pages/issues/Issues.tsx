@@ -1,29 +1,28 @@
 import { Issue } from "@/components/issues";
 import { getIssueData } from "@/lib/api/api";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { FaRegDotCircle } from "react-icons/fa";
 import { MdCheckBoxOutlineBlank } from "react-icons/md";
 import Loading from "@/layouts/Loading";
-
-export interface IssueType {
-  number: number;
-  title: string;
-  created_at: string;
-  user?: string;
-  comments: number;
-}
+import { useContext } from "react";
+import { IssueContext, IssueData } from "@/lib/states/ContextProvider";
 
 const Issues = () => {
-  const [issues, setIssues] = useState<IssueType[]>([]);
+  const { issues, setIssues } = useContext(IssueContext);
+
   const [loading, setIsLoading] = useState(true);
 
+  const target = useRef<HTMLDivElement>(null);
+  const page = useRef<number>(1);
+
   // FIXME: 훅으로 바꾸자!
-  const getIssues = async () => {
-    const response = await getIssueData();
+  const getIssues = async (page: number) => {
+    const response = await getIssueData(page);
+
     const issue = response?.map(
       ({ number, title, created_at, user, comments }) => {
-        const newData: IssueType = {
+        const newData: IssueData = {
           number,
           title,
           created_at,
@@ -34,27 +33,47 @@ const Issues = () => {
       }
     );
     if (issue) {
-      setIssues(issue);
+      setIssues((prev) => [...prev, ...issue]);
       setIsLoading(false);
     }
     return response;
   };
 
   useEffect(() => {
-    getIssues();
+    getIssues(page.current);
   }, []);
+
+  //FIXME: 훅으로 바꾸기
+  useEffect(() => {
+    if (!loading) {
+      //로딩되었을 때만 실행
+      const observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          page.current += 1;
+
+          getIssues(page.current);
+          // 데이터 더 불러오면서 페이지 증가시키기
+          //밑에 도달했을 때 pageNumber를 1씩 증가시켜 데이터를 10개씩 더 보여줌.
+        }
+      });
+      //옵져버 탐색 시작
+      observer.observe(target.current as HTMLElement);
+    }
+  }, [loading]);
 
   return (
     <Container>
       {loading && <Loading />}
       <IssueContainer>
-        <IssueBox>
-          <p>
-            <MdCheckBoxOutlineBlank />
-            <FaRegDotCircle />
-            <span>{issues.length} Open</span>
-          </p>
-        </IssueBox>
+        {
+          <IssueBox>
+            <p>
+              <MdCheckBoxOutlineBlank />
+              <FaRegDotCircle />
+              <span>{issues.length} Open</span>
+            </p>
+          </IssueBox>
+        }
         <IsssueLists>
           {issues.map(({ number, title, created_at, user, comments }) => {
             return (
@@ -70,6 +89,7 @@ const Issues = () => {
           })}
         </IsssueLists>
       </IssueContainer>
+      <div ref={target} />
     </Container>
   );
 };

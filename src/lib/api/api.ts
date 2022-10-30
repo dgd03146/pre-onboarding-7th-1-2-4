@@ -18,18 +18,19 @@ const isOctokitError = (e: unknown): e is RequestError => {
   return false;
 };
 
-export const getIssueData = async () => {
+export const getIssueData = async (page: number, per_page = 10) => {
   try {
     const { data } = await octokit.request("GET /repos/{owner}/{repo}/issues", {
       owner: "angular",
       repo: "angular-cli",
-      per_page: 10,
+      per_page,
+      page,
       sort: "comments",
       direction: "desc"
     });
-    const opendIssues = data.filter((it) => it.state === "open");
+    const openedIssues = data.filter((it) => it.state === "open");
 
-    return opendIssues;
+    return openedIssues;
   } catch (error) {
     if (isOctokitError(error)) {
       console.log(`Error! Status: ${error.status}. Message: ${error.errors}`);

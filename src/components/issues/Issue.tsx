@@ -3,10 +3,18 @@ import styled from "styled-components";
 import { FaRegDotCircle } from "react-icons/fa";
 import { FaRegCommentAlt } from "react-icons/fa";
 import { MdCheckBoxOutlineBlank } from "react-icons/md";
-import { IssueType } from "@/pages/issues/Issues";
+
 import { useNavigate } from "react-router-dom";
 
-const Issue = ({ number, title, created_at, user, comments }: IssueType) => {
+interface IssueData {
+  number: number;
+  title: string;
+  created_at: string;
+  user?: string;
+  comments: number;
+}
+
+const Issue = ({ number, title, created_at, user, comments }: IssueData) => {
   const navigate = useNavigate();
   return (
     <Container

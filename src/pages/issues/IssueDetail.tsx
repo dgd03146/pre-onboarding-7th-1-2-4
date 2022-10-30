@@ -39,19 +39,21 @@ export const IssueDetail = () => {
     <>
       <Container>
         {loading && <Loading />}
-        <IssueBox>
-          <MdCheckBoxOutlineBlank />
-          <FaRegDotCircle className="dot" />
-          <IssueInfo>
-            <div>
-              <p>{issue?.title}</p>
-            </div>
-            <div className="issue_number">
-              <p>#{issue?.number}</p>
-              <p>{issue?.created_at}</p>
-            </div>
-          </IssueInfo>
-        </IssueBox>
+        {issue && (
+          <IssueBox>
+            <MdCheckBoxOutlineBlank />
+            <FaRegDotCircle className="dot" />
+            <IssueInfo>
+              <div>
+                <p>{issue?.title}</p>
+              </div>
+              <div className="issue_number">
+                <p>#{issue?.number}</p>
+                <p>{issue?.created_at}</p>
+              </div>
+            </IssueInfo>
+          </IssueBox>
+        )}
         <CommentsBox>
           <p>{issue?.user?.login}</p>
           <div>
